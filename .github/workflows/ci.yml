@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout Source Code
         uses: actions/checkout@v5
 
       - name: Setup .NET SDK
@@ -26,17 +26,25 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Display Repository Structure
+        run: |
+          echo "Current Directory:"
+          pwd
+          echo ""
+          echo "Repository Structure:"
+          ls -R
+
       - name: Restore Dependencies
-        run: dotnet restore StudentManagement.API.slnx
+        run: dotnet restore StudentManagement.API/StudentManagement.API.slnx
 
       - name: Build Solution
-        run: dotnet build StudentManagement.API.slnx --configuration Release --no-restore
+        run: dotnet build StudentManagement.API/StudentManagement.API.slnx --configuration Release --no-restore
 
-      - name: Run Tests
-        run: dotnet test StudentManagement.API.slnx --configuration Release --no-build --verbosity normal
+      - name: Run Unit Tests
+        run: dotnet test StudentManagement.API/StudentManagement.API.slnx --configuration Release --no-build --verbosity normal
 
       - name: Publish Web API
-        run: dotnet publish StudentManagement.API/StudentManagement.API.csproj --configuration Release --output ./publish --no-build
+        run: dotnet publish StudentManagement.API/StudentManagement.API/StudentManagement.API.csproj --configuration Release --output ./publish --no-build
 
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
