@@ -9,6 +9,7 @@ namespace StudentManagement.API.Controllers {
         public IActionResult Get() {
             return Ok(new
             {
+                Code = 200,
                 Status = "Healthy",
                 Message = "Student Management API is running successfully."
             });
