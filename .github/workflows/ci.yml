@@ -1,0 +1,53 @@
+name: StudentManagement API CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/**
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-test-publish:
+    name: Build, Test and Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v5
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Display Repository Structure
+        run: |
+          echo "Current Directory:"
+          pwd
+          echo ""
+          echo "Repository Structure:"
+          ls -R
+
+      - name: Restore Dependencies
+        run: dotnet restore StudentManagement.API/StudentManagement.API.slnx
+
+      - name: Build Solution
+        run: dotnet build StudentManagement.API/StudentManagement.API.slnx --configuration Release --no-restore
+
+      - name: Run Unit Tests
+        run: dotnet test StudentManagement.API/StudentManagement.API.slnx --configuration Release --no-build --verbosity normal
+
+      - name: Publish Web API
+        run: dotnet publish StudentManagement.API/StudentManagement.API/StudentManagement.API.csproj --configuration Release --output ./publish --no-build
+
+      - name: Upload Publish Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: studentmanagement-api-publish
+          path: ./publish
